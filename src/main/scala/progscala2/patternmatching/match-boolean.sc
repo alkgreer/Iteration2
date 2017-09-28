@@ -1,4 +1,4 @@
-val bools = Seq(true, false)
+val bools = Seq(true, false, true, true, false)
 
 for(bool <- bools){
   bool match {
