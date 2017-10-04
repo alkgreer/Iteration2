@@ -1,2 +1,4 @@
-# Iteration2
-This repo contains examples from chapters 4 - 7 in the O'Reilly Programming Sala 2nd edition 
+# Iteration2- Chpt 4 - 7
+### This project is for learning scala from the book _O'Reilly Programming Scala 2nd edition_
+1. **Chapter 4**
+
