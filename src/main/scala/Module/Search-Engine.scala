@@ -2,9 +2,9 @@
 package Module
 
 object searchEngine {
-  /******************************************************
-  **             Search Engine Classes
-  ******************************************************/
+  /*
+                           **Class**
+  */
   class User(userName: String, pass: String, history: List[Search]) {
     val name = userName
     private val password = pass
@@ -19,16 +19,41 @@ object searchEngine {
 
   case class Result(title: String, description: String)
 
-  def userFrequentSearch(searches: List[Search]): String = searches match {
-    case head :: tail => s"${head.value} ${userFrequentSearch(tail)}"
-    case Nil => "Nil"
+  def userFrequentSearch(searches: List[Search]): String = {
+    if (searches.isEmpty) {
+      return "No Search History"
+    } else {
+      val frequencies = for {
+        search <- searches
+      } yield {
+        search -> searches.count(_ == search)
+      }
+      val mostFrequentSearch = frequencies.maxBy(_._2)
+      return mostFrequentSearch._1.value
+    }
+  }
+
+  def engineFrequentSearch(users: List[User]): String = {
+    val engineHistory = (for (usr <- users) yield usr.searchHistory).flatten
+    if (engineHistory.isEmpty) {
+      return "No Users Found"
+    } else {
+      val frequencies = for {
+        s <- engineHistory
+      } yield {
+        s -> engineHistory.count(_ == s)
+      }
+      val mostFrequent = frequencies.maxBy(_._2)
+      return mostFrequent._1.value
+    }
   }
 
 
 
-  /******************************************************
-  **                      MAIN
-  ******************************************************/
+  /*
+                           **MAIN**
+  */
+
   def main(args: Array[String]) {
     // Make some searches and fill them with results
     val GameSearch = Search("League of Legends", List(
@@ -70,16 +95,11 @@ object searchEngine {
 
     val searchEngineUsers = List(Alisha, Kate, Marcus, Sarah, Abby)
 
-    // Print
-    //for (user <- searchEngineUsers) println(user)
-
-    // Print out info on all the users
-    //for (user <- searchEngineUsers) println(user)
 
     // Find each user's most frequent search
     for (user <- searchEngineUsers) println(s"${user.name}'s most frequent search: ${userFrequentSearch(user.searchHistory)}")
 
     // Find the most frequent search on the engine
-    //println(s"Most frequent search on this engine: ${engineFrequentSearch(searchEngineUsers)}")
+    println(s"Most frequent search on this engine: ${engineFrequentSearch(searchEngineUsers)}")
   }
 }
