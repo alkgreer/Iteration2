@@ -19,42 +19,12 @@ object searchEngine {
 
   case class Result(title: String, description: String)
 
-  def userFrequentSearch(usr: User): String = {
-    @scala.annotation.tailrec
-    def groupSearches(searches: List[Search], groups: List[List[Search]]): List[List[Search]] =
-      searches match {
-        case Nil          => groups
-        case head :: tail =>
-          val p = searches.partition(_ == head)
-          groupSearches(p._2, groups :+ p._1)
-    }
-    val frequencies = groupSearches(usr.searchHistory, Nil)
-
-    if (frequencies.isEmpty) {
-      return "No Search History Found"
-    } else {
-      return frequencies.maxBy(_.length).head.value
-    }
+  def userFrequentSearch(searches: List[Search]): String = searches match {
+    case head :: tail => s"${head.value} ${userFrequentSearch(tail)}"
+    case Nil => "Nil"
   }
 
-  def engineFrequentSearch(users: List[User]): String = {
-    @scala.annotation.tailrec
-    def groupSearches(searches: List[Search], groups: List[List[Search]]): List[List[Search]] =
-      searches match {
-        case Nil          => groups
-        case head :: tail =>
-          val p = searches.partition(_ == head)
-          groupSearches(p._2, groups :+ p._1)
-    }
-    val engineHistory = (for (usr <- users) yield usr.searchHistory).flatten
-    val frequencies = groupSearches(engineHistory, Nil)
 
-    if (frequencies.isEmpty) {
-      return "No Search History Found"
-    } else {
-      return frequencies.maxBy(_.length).head.value
-    }
-  }
 
   /******************************************************
   **                      MAIN
@@ -94,22 +64,22 @@ object searchEngine {
     //make users
     val Alisha = new User("Alisha", "StrongPassWord", List(GameSearch, VideoSearch))
     val Kate = new User("BestFriend", "SecretPass", List(GameSearch, ShoppingSearch, FinalSearch))
-    val Marcus = new User("Marcus", "TypicalPass", List())
+    val Marcus = new User("Marcus", "TypicalPass", List(GameSearch, VideoSearch))
     val Sarah = new User("Beth", "MoreSecret", List(RandomSearch))
     val Abby = new User("Friend", "HelloWorld1", List(RandomSearch, GameSearch))
 
     val searchEngineUsers = List(Alisha, Kate, Marcus, Sarah, Abby)
 
     // Print
-    for (user <- searchEngineUsers) println(user)
+    //for (user <- searchEngineUsers) println(user)
 
     // Print out info on all the users
     //for (user <- searchEngineUsers) println(user)
 
     // Find each user's most frequent search
-    for (user <- searchEngineUsers) println(s"${user.name}'s most frequent search: ${userFrequentSearch(user)}")
+    for (user <- searchEngineUsers) println(s"${user.name}'s most frequent search: ${userFrequentSearch(user.searchHistory)}")
 
     // Find the most frequent search on the engine
-    println(s"Most frequent search on this engine: ${engineFrequentSearch(searchEngineUsers)}")
+    //println(s"Most frequent search on this engine: ${engineFrequentSearch(searchEngineUsers)}")
   }
 }
